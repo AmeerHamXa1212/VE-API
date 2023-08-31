@@ -21,9 +21,6 @@ export function generateRandomCodes(
       const randomIndex = Math.floor(Math.random() * dictionary.length);
       code += dictionary.charAt(randomIndex);
     }
-
-    //console.log(`Generated code ${i + 1}: ${code}`); // Print the generated code
-    //codes.push(code);
     codes.push({ gameCode: code });
   }
   return codes;
@@ -60,12 +57,6 @@ export const generateGameCodes = async (req: Request, res: Response) => {
   const randomGameCodes = generateRandomCodes(numberOfGameCode);
   try {
     const savedCodes = await User.insertMany(randomGameCodes);
-
-    // console.log(`numberOfGameCode == ${numberOfGameCode}`);
-    // console.log("Body contents are : ", req.body.noOfGameCodes);
-    // console.log("Value from validateNoOfGameCodes:", value);
-    //console.log("Random game codes:", randomGameCodes);
-
     console.log(`Following are the generated codes : 
     ${savedCodes}`);
     res.status(200).json(savedCodes);
@@ -76,12 +67,12 @@ export const generateGameCodes = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { error } = validateGameCode({ GameCode: req.body.gameCode }); // Validate the field "GameCode"
+  const { error } = validateGameCode({ GameCode: req.body.gameCode });
   if (error) {
     console.log(`Error is : ${error}`);
     return res.status(400).json({ message: error.details[0].message });
   }
-  const GameCode = req.body.gameCode; // Access the gameCode directly from req.body
+  const GameCode = req.body.gameCode;
 
   try {
     const user = await User.findOne({ gameCode: GameCode });
@@ -89,7 +80,6 @@ export const login = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid game code" });
     }
-
     if (user.attemptedCounts >= 5 && user.lastAttemptTime) {
       const currentTime = new Date();
       const timeSinceLastAttempt =
@@ -100,11 +90,9 @@ export const login = async (req: Request, res: Response) => {
         return res.status(429).json({ message: "Try after some time" });
       }
     }
-
-    // Update the attempted count here
     user.attemptedCounts += 1;
     user.lastAttemptTime = new Date();
-    await user.save(); // Save the updated user object
+    await user.save();
 
     console.log(`Logged in as : ${user}`);
     res.status(200).json({ message: "Logged in successfully" });
