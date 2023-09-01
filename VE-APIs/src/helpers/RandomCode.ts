@@ -1,3 +1,5 @@
+import { customAlphabet } from "nanoid";
+
 export function generateRandomCodes(
   Codecount: number
 ): Array<{ gameCode: string }> {
@@ -8,14 +10,17 @@ export function generateRandomCodes(
 
   const dictionary = characters_Lower + numbers + characters_Upper;
 
-  for (let i = 0; i < Codecount; i++) {
-    const codeLength = 8;
-    let code = "";
+  const CustomCode = customAlphabet(dictionary, 8);
 
-    for (let j = 0; j < codeLength; j++) {
-      const randomIndex = Math.floor(Math.random() * dictionary.length);
-      code += dictionary.charAt(randomIndex);
-    }
+  for (let i = 0; i < Codecount; i++) {
+    let code = CustomCode();
+    // const codeLength = 8;
+    // let code = "";
+
+    // for (let j = 0; j < codeLength; j++) {
+    //   const randomIndex = Math.floor(Math.random() * dictionary.length);
+    //   code += dictionary.charAt(randomIndex);
+    // }
     codes.push({ gameCode: code });
   }
   return codes;
