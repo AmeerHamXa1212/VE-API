@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
+import { limiter } from "../helpers/RateLimiter";
 
 import mongoose from "mongoose";
 import { IUser, User } from "../models/user";
@@ -50,8 +51,12 @@ export const login = async (
 
   const user = await User.findOne({ gameCode: GameCode });
   if (!user) {
-    return res.status(401).json({ message: "Invalid game code" });
+    return limiter(req, res, () => {
+      res.status(401).json({ message: "Invalid game code" });
+    });
   }
   console.log(`Logged in as: ${user}`);
+  user.attemptedCounts += 1;
+  await user.save();
   res.status(200).json({ message: "Logged in successfully" });
 };
