@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
 import { limiter } from "../helpers/RateLimiter";
-
+import { MemoryStore } from "express-rate-limit";
 import mongoose from "mongoose";
 import { IUser, User } from "../models/user";
 import Joi from "joi";
