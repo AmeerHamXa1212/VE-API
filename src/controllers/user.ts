@@ -31,7 +31,6 @@ export const generateGameCodes = async (
   }
   const numberOfGameCode: number = value.noOfGameCodes;
   const randomGameCodes = generateRandomCodes(numberOfGameCode);
-
   const savedCodes = await User.insertMany(randomGameCodes);
   console.log(`Following are the generated codes: ${savedCodes}`);
   res.status(200).json(savedCodes);
@@ -48,7 +47,6 @@ export const login = async (
     return res.status(400).json({ message: error.details[0].message });
   }
   const GameCode = req.body.gameCode;
-
   const user = await User.findOne({ gameCode: GameCode });
   if (!user) {
     return limiter(req, res, () => {

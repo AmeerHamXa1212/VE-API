@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { User } from "./models/user";
 import routes from "./routes/index";
 import { errorHandler } from "./middleware/errorHandler";
@@ -11,6 +12,11 @@ dotenv.config();
 const app = express();
 app.use(routes);
 app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.set("trust proxy", false);
 
 // Use the routes middleware
@@ -33,6 +39,3 @@ mongoose
 
 app.use(errorHandler);
 export default app;
-
-
-
